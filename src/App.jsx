@@ -7,17 +7,19 @@ const ts = new Date().getTime();
 const publicKey = "6e0097515dc105a219d25ef94858bb63";
 const privateKey = "123102cd959c55e2fa8771bea661b34427de08b0";
 const hash = CryptoJS.MD5(ts + privateKey + publicKey).toString();
-const url = "http://gateway.marvel.com/v1/public/characters?"
-const EventUrl = "http://gateway.marvel.com/v1/public/events?"
+const url = "http://gateway.marvel.com/v1/public/"
+
 function App() {
   const [characters, setCharacters] = useState([]);
   const [searchBarCharacterValue,setSearchBarCharacterValue]  = useState('');
   const [searchedCharacter,setSearchedCharacter] = useState('');
   const [searchBarEvent,setSearchBarEvent] = useState('');
   const [totalCharacters,setTotalCharacters] = useState(0)
+  const [totalEvents,setTotalEvents] = useState(0);
+  const [totalSeries,setTotalSeries] = useState(0);
   useEffect(()=> {
     const apiCall = async () => {
-      const response = await fetch(`${url}ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`)
+      const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`)
       if (!response.ok) {
         console.error("response was not received")
       }
@@ -33,15 +35,38 @@ function App() {
 
   useEffect(()=>{
 
-    const getTotal = async() => {
-      const response = await fetch(`${url}ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
+    const getTotalChrAmount = async() => {
+      const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
       const  json = await response.json()
       setTotalCharacters(json.data.total)
       
     }
-    getTotal();
+    getTotalChrAmount();
 
   },[])
+
+  useEffect(()=>{
+
+    const getTotalEventAmount = async() => {
+      const response = await fetch(`${url}events?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
+      const  json = await response.json()
+      setTotalEvents(json.data.total)
+      
+    }
+    getTotalEventAmount();
+
+  },[])
+
+  useEffect(()=> {
+    const getTotalSeriesAmount = async()=> {
+      const response = await fetch(`${url}series?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
+      const  json = await response.json()
+      console.log(json);
+      setTotalSeries(json.data.total)
+    }
+    getTotalSeriesAmount();
+  },[])
+
 
   const handleCharacterChange = (e) => {
     setSearchBarCharacterValue(e.target.value)
@@ -62,10 +87,23 @@ function App() {
   
   return (
     <div>
-      <SummaryStats
-      value={totalCharacters}
-      desc={"Total Characters "}
-      />
+      <div className='summary-container'>
+        <SummaryStats
+        value={totalCharacters}
+        desc={"Total Characters"}
+        />
+
+        <SummaryStats
+        value={totalEvents}
+        desc={"Total Events "}
+        />
+
+        <SummaryStats
+        value={totalSeries}
+        desc={"Total Series"}
+        />
+      </div>
+      
       <form onSubmit={handleSubmit}>
         <input
          type="text"
@@ -81,25 +119,47 @@ function App() {
           />
         <button type="submit">Submit</button>
       </form>
-      <ul>
-        {
-        
-        searchedCharacter == ''? 
-        characters.map(character=>(
-          <li
-           key={character.id}>
-            {character.name }
-            
-            {
-              character.events.available > 0 ? character.events.items[0].name : "no events"
-            
-            }
+      <table>
 
-          </li>
-        )) : <li>{searchedCharacter}</li>
-        }
+          <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        events
+                    </th>
+                        <th>
+                         series
+                        </th>
+                </tr>
+            </thead>
+          <tbody>
+              {
+              searchedCharacter == ''? 
+              characters.map(character=>(
+                <tr
+                key={character.id}>
+                  <td>
+                  {character.name }
+                  </td>
+                  <td>
+                  {
+                    character.events.available > 0 ? character.events.items[0].name : "no events"
+                  
+                  }
+                  </td>
+                  <td>
+                    {character.series.available > 0 ? character.series.items[0].name : "no series"}
+                  </td>
+
+                </tr>
+              )) :
+               <li>{searchedCharacter}</li>
+              }
+          </tbody>
       
-      </ul>
+      </table>
     </div>
   )
 }

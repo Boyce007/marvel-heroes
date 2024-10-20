@@ -14,7 +14,8 @@ The following **required** functionality is completed:
 - [ X ] **Data uses the useEffect React hook and async/await syntax**
 - [ X ] **The app dashboard includes at least three summary statistics about the data such as**
   - [ X ] *total number of characters*
-  - [ X ] 
+  - [ X ] *total number of Events*
+  - [ X ] *total number of Series*
 - [ X ] **A search bar allows the user to search for an item in the fetched data**
 - [ ] **Multiple different filters (2+) allow the user to filter items in the database by specified categories**
 

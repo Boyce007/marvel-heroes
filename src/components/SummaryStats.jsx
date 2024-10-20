@@ -2,7 +2,7 @@ import React from 'react'
 
 const SummaryStats = ({value,desc}) => {
   return (
-    <div>
+    <div className='stat'>
       <h2>{desc}</h2>
       <h3>{value}</h3>
 

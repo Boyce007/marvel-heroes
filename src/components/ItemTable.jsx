@@ -19,6 +19,7 @@ const ItemTable = ({items}) => {
             </thead>
             <tbody>
                 {
+                    
                     items.map((item) =>(
                     <tr key={item.id}>
                     <td>
