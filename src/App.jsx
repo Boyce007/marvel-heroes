@@ -12,26 +12,25 @@ const url = "http://gateway.marvel.com/v1/public/"
 function App() {
   const [characters, setCharacters] = useState([]);
   const [searchBarCharacterValue,setSearchBarCharacterValue]  = useState('');
-  const [searchedCharacter,setSearchedCharacter] = useState('');
+  const [searchedCharacter,setSearchedCharacter] = useState("");
   const [searchBarEvent,setSearchBarEvent] = useState('');
   const [totalCharacters,setTotalCharacters] = useState(0)
   const [totalEvents,setTotalEvents] = useState(0);
   const [totalSeries,setTotalSeries] = useState(0);
   useEffect(()=> {
     const apiCall = async () => {
-      const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`)
+      const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`);
       if (!response.ok) {
-        console.error("response was not received")
+        console.error("response was not received");
       }
-      const json = await response.json()
-      console.log(json)
+      const json = await response.json();
       setCharacters(json.data.results);
-
     }
 
     apiCall();
 
   },[])
+
 
   useEffect(()=>{
 
@@ -39,6 +38,7 @@ function App() {
       const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
       const  json = await response.json()
       setTotalCharacters(json.data.total)
+      
       
     }
     getTotalChrAmount();
@@ -61,7 +61,6 @@ function App() {
     const getTotalSeriesAmount = async()=> {
       const response = await fetch(`${url}series?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
       const  json = await response.json()
-      console.log(json);
       setTotalSeries(json.data.total)
     }
     getTotalSeriesAmount();
@@ -78,15 +77,35 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const searched = characters.filter((character) =>
-    character.name.toLowerCase().includes(searchBarCharacterValue.toLowerCase()));
-    setSearchedCharacter(searched[0].name);
+    if (searchBarCharacterValue != "") {
+      const searchedCh = characters.filter((character) =>
+        character.name.toLowerCase().includes(searchBarCharacterValue.toLowerCase()
+        ));
+    
+        setSearchedCharacter(searchedCh);
+
+    } else if (searchBarEvent != "") {
+      const searchedCh = characters.filter((character) => 
+        character.events.available > 0 &&
+        // Check if any event in the character's event list matches the search query
+        character.events.items.some((event) => 
+          event.name.toLowerCase().includes(searchBarEvent.toLowerCase())
+        )
+      );
+    
+      setSearchedCharacter(searchedCh);
+      console.log(searchedCh);  // Log the filtered characters
+    }
+        
+    }
+    
   
-  }
+  
   
   
   return (
-    <div>
+    <div className='page-container'>
+      <h1>Lets See What Marvel Has To Offer</h1>
       <div className='summary-container'>
         <SummaryStats
         value={totalCharacters}
@@ -119,6 +138,7 @@ function App() {
           />
         <button type="submit">Submit</button>
       </form>
+      <div className='table-container'>
       <table>
 
           <thead>
@@ -141,25 +161,34 @@ function App() {
                 <tr
                 key={character.id}>
                   <td>
-                  {character.name }
+                  {character.name}
                   </td>
                   <td>
                   {
-                    character.events.available > 0 ? character.events.items[0].name : "no events"
+                    character.events.available
                   
                   }
                   </td>
                   <td>
-                    {character.series.available > 0 ? character.series.items[0].name : "no series"}
+                    {character.series.available
+                    }
                   </td>
 
                 </tr>
               )) :
-               <li>{searchedCharacter}</li>
+               <tr>
+                <td>{searchedCharacter[0].name}</td>
+                <td>
+                  {searchedCharacter[0].events.available > 0 ? searchedCharacter[0].events.items[0].name : "no events"}
+                </td>
+                <td>{searchedCharacter[0].series.available > 0 ? searchedCharacter[0].series.items[0].name : "no series"} </td>
+
+               </tr>
               }
           </tbody>
       
       </table>
+      </div>
     </div>
   )
 }

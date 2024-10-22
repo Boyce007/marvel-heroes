@@ -44,6 +44,29 @@
 .summary-container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  
 }
+
+
+th, td {
+  border-radius:5cm;
+  height: 50px;
+}
+
+.table-container {
+  width: 300px;
+  background-color: #f04a50;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  text-align: center;
+  margin: 20px;
+  padding: 10px;
+  
+  
+}
+
 
 
