@@ -8,6 +8,7 @@ const publicKey = "6e0097515dc105a219d25ef94858bb63";
 const privateKey = "123102cd959c55e2fa8771bea661b34427de08b0";
 const hash = CryptoJS.MD5(ts + privateKey + publicKey).toString();
 const url = "http://gateway.marvel.com/v1/public/"
+import TableRow from './components/TableRow';
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -17,19 +18,33 @@ function App() {
   const [totalCharacters,setTotalCharacters] = useState(0)
   const [totalEvents,setTotalEvents] = useState(0);
   const [totalSeries,setTotalSeries] = useState(0);
-  useEffect(()=> {
-    const apiCall = async () => {
-      const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`);
+
+  const handleDashBoardClick = async () => {
+    const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`);
       if (!response.ok) {
         console.error("response was not received");
       }
       const json = await response.json();
       setCharacters(json.data.results);
+
+      
+  }
+
+  useEffect(()=> {
+    const apiCall = async () => {
+      const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`);
+        if (!response.ok) {
+          console.error("response was not received");
+        }
+        const json = await response.json();
+        setCharacters(json.data.results);
     }
 
     apiCall();
 
   },[])
+
+  
 
 
   useEffect(()=>{
@@ -106,6 +121,8 @@ function App() {
   return (
     <div className='page-container'>
       <h1>Lets See What Marvel Has To Offer</h1>
+      <button onClick={handleDashBoardClick}>Return to DashBoard</button>
+
       <div className='summary-container'>
         <SummaryStats
         value={totalCharacters}
@@ -140,7 +157,6 @@ function App() {
       </form>
       <div className='table-container'>
       <table>
-
           <thead>
                 <tr>
                     <th>
@@ -158,32 +174,9 @@ function App() {
               {
               searchedCharacter == ''? 
               characters.map(character=>(
-                <tr
-                key={character.id}>
-                  <td>
-                  {character.name}
-                  </td>
-                  <td>
-                  {
-                    character.events.available
-                  
-                  }
-                  </td>
-                  <td>
-                    {character.series.available
-                    }
-                  </td>
-
-                </tr>
+                <TableRow key={character.id} ch={character}/>
               )) :
-               <tr>
-                <td>{searchedCharacter[0].name}</td>
-                <td>
-                  {searchedCharacter[0].events.available > 0 ? searchedCharacter[0].events.items[0].name : "no events"}
-                </td>
-                <td>{searchedCharacter[0].series.available > 0 ? searchedCharacter[0].series.items[0].name : "no series"} </td>
-
-               </tr>
+              <TableRow  ch={searchedCharacter[0]}/>
               }
           </tbody>
       

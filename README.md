@@ -4,7 +4,7 @@ Submitted by: **Daniel Boyc**
 
 This web app: **Allows users to Search for marvel's database of heroes**
 
-Time spent: **X** hours spent in total
+Time spent: **10** hours spent in total
 
 ## Required Features
 
@@ -17,7 +17,7 @@ The following **required** functionality is completed:
   - [ X ] *total number of Events*
   - [ X ] *total number of Series*
 - [ X ] **A search bar allows the user to search for an item in the fetched data**
-- [ ] **Multiple different filters (2+) allow the user to filter items in the database by specified categories**
+- [ X ] **Multiple different filters (2+) allow the user to filter items in the database by specified categories**
 
 The following **optional** features are implemented:
 
