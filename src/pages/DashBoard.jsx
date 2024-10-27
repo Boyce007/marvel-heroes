@@ -17,8 +17,8 @@ function DashBoard() {
   const [searchedCharacter,setSearchedCharacter] = useState("");
   const [searchBarEvent,setSearchBarEvent] = useState('');
   const [totalCharacters,setTotalCharacters] = useState(0)
-  const [totalEvents,setTotalEvents] = useState(0);
-  const [totalSeries,setTotalSeries] = useState(0);
+  const [totalEvents,setTotalEvents] = useState(null);
+  const [totalSeries ,setTotalSeries] = useState(null);
 
   const handleDashBoardClick = async () => {
     const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`);
@@ -39,7 +39,6 @@ function DashBoard() {
         }
         const json = await response.json();
         setCharacters(json.data.results);
-        console.log(characters)
     }
 
     apiCall();
@@ -49,39 +48,31 @@ function DashBoard() {
   
 
 
-  useEffect(()=>{
+  const getTotal= async(path) => {
+    const response = await fetch(`${url}${path}?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
+    const  json = await response.json()
+    return json.data.total
+  }
+useEffect(()=>{
+  const fetchTotals = async()=> {
+    const tc = await getTotal('characters');
+    const te = await getTotal('events')
+    const tse = await getTotal('series')
+    setTotalCharacters(tc)
+    setTotalEvents(te)
+    setTotalSeries(tse)
+  }
+  fetchTotals();
 
-    const getTotalChrAmount = async() => {
-      const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
-      const  json = await response.json()
-      setTotalCharacters(json.data.total)
-      
-      
-    }
-    getTotalChrAmount();
+  
+  
 
-  },[])
 
-  useEffect(()=>{
+},[])
+  
+  
 
-    const getTotalEventAmount = async() => {
-      const response = await fetch(`${url}events?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
-      const  json = await response.json()
-      setTotalEvents(json.data.total)
-      
-    }
-    getTotalEventAmount();
-
-  },[])
-
-  useEffect(()=> {
-    const getTotalSeriesAmount = async()=> {
-      const response = await fetch(`${url}series?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=1`);
-      const  json = await response.json()
-      setTotalSeries(json.data.total)
-    }
-    getTotalSeriesAmount();
-  },[])
+ 
 
 
   const handleCharacterChange = (e) => {
@@ -111,7 +102,7 @@ function DashBoard() {
       );
     
       setSearchedCharacter(searchedCh);
-      console.log(searchedCh);  // Log the filtered characters
+      // console.log(searchedCh);  // Log the filtered characters
     }
         
     }
@@ -133,12 +124,12 @@ function DashBoard() {
 
         <SummaryStats
         value={totalEvents}
-        desc={"Total Events "}
+        desc={"Number of events"}
         />
 
         <SummaryStats
         value={totalSeries}
-        desc={"Total Series"}
+        desc="Total number of Series"
         />
       </div>
       
