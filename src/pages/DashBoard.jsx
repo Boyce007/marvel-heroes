@@ -27,7 +27,7 @@ function DashBoard() {
       }
       const json = await response.json();
       setCharacters(json.data.results);
-
+      
       
   }
 
@@ -39,11 +39,12 @@ function DashBoard() {
         }
         const json = await response.json();
         setCharacters(json.data.results);
+        console.log(characters)
     }
 
     apiCall();
 
-  },[])
+  },[characters])
 
   
 
