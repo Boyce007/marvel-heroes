@@ -4,6 +4,7 @@ import CryptoJS from 'crypto-js';
 import { useEffect } from 'react';
 import SummaryStats from "../components/SummaryStats"
 import TableRow from '../components/TableRow';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 const ts = new Date().getTime();
 const publicKey = "6e0097515dc105a219d25ef94858bb63";
 const privateKey = "123102cd959c55e2fa8771bea661b34427de08b0";
@@ -106,6 +107,15 @@ useEffect(()=>{
     }
         
     }
+    const seriesChartData = characters.map(character => ({
+      name: character.name,
+      seriesCount: character.series.available, // Number of series available for each character
+    }));
+
+    const eventChartData = characters.map(character => ({
+      name: character.name,
+      seriesCount: character.events.available, // Number of series available for each character
+    }));
     
   
   
@@ -148,32 +158,53 @@ useEffect(()=>{
           />
         <button type="submit">Submit</button>
       </form>
-      <div className='table-container'>
-      <table>
-          <thead>
-                <tr>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        events
-                    </th>
-                        <th>
-                         series
-                        </th>
-                </tr>
-            </thead>
-          <tbody>
-              {
-              searchedCharacter == ''? 
-              characters.map(character=>(
-                <TableRow key={character.id} ch={character}/>
-              )) :
-              <TableRow  ch={searchedCharacter[0]}/>
-              }
-          </tbody>
-      
-      </table>
+      <div className='dashboard-data-container'>
+        <div className='table-container'>
+        <table>
+            <thead>
+                  <tr>
+                      <th>
+                          Name
+                      </th>
+                      <th>
+                          events
+                      </th>
+                          <th>
+                          series
+                          </th>
+                  </tr>
+              </thead>
+            <tbody>
+                {
+                searchedCharacter == ''? 
+                characters.map(character=>(
+                  <TableRow key={character.id} ch={character}/>
+                )) :
+                <TableRow  ch={searchedCharacter[0]}/>
+                }
+            </tbody>
+        
+        </table>
+
+        </div>
+        <div className='chart-container'>
+          <BarChart width={500} height={300} data={seriesChartData}>
+            <XAxis dataKey="name"/>
+            <YAxis/>
+            <Tooltip/>
+            <CartesianGrid strokeDasharray="3 3" />
+            <Bar dataKey="seriesCount" fill="#8884d8" />
+          </BarChart>
+
+          <BarChart width={500} height={300} data={eventChartData}>
+            <XAxis dataKey="name"/>
+            <YAxis/>
+            <Tooltip/>
+            <CartesianGrid strokeDasharray="3 3" />
+            <Bar dataKey="seriesCount" fill="#8884d8" />
+          </BarChart>
+
+        </div>
       </div>
     </div>
   )

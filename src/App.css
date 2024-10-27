@@ -68,5 +68,7 @@ th, td {
   
 }
 
-
+.dashboard-data-container {
+  display: flex; 
+}
 
