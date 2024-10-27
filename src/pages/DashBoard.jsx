@@ -4,12 +4,13 @@ import CryptoJS from 'crypto-js';
 import { useEffect } from 'react';
 import SummaryStats from "../components/SummaryStats"
 import TableRow from '../components/TableRow';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import DataChart from '../components/DataChart';
 const ts = new Date().getTime();
 const publicKey = "6e0097515dc105a219d25ef94858bb63";
 const privateKey = "123102cd959c55e2fa8771bea661b34427de08b0";
 const hash = CryptoJS.MD5(ts + privateKey + publicKey).toString();
 const url = "http://gateway.marvel.com/v1/public/"
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Label, } from 'recharts';
 
 
 function DashBoard() {
@@ -114,7 +115,7 @@ useEffect(()=>{
 
     const eventChartData = characters.map(character => ({
       name: character.name,
-      seriesCount: character.events.available, // Number of series available for each character
+      eventsCount: character.events.available, // Number of series available for each character
     }));
     
   
@@ -188,21 +189,17 @@ useEffect(()=>{
 
         </div>
         <div className='chart-container'>
-          <BarChart width={500} height={300} data={seriesChartData}>
-            <XAxis dataKey="name"/>
-            <YAxis/>
-            <Tooltip/>
-            <CartesianGrid strokeDasharray="3 3" />
-            <Bar dataKey="seriesCount" fill="#8884d8" />
-          </BarChart>
+          <DataChart
+            chartData={seriesChartData}
+            chartTitle={'Series per Character'}
+            dataValue={'seriesCount'}
+          ></DataChart>
+          <DataChart
+            chartData={eventChartData}
+            chartTitle={'Events Per Character'}
+            dataValue={'eventsCount'}
+          />
 
-          <BarChart width={500} height={300} data={eventChartData}>
-            <XAxis dataKey="name"/>
-            <YAxis/>
-            <Tooltip/>
-            <CartesianGrid strokeDasharray="3 3" />
-            <Bar dataKey="seriesCount" fill="#8884d8" />
-          </BarChart>
 
         </div>
       </div>
