@@ -1,6 +1,7 @@
 import React from 'react'
 import { useParams,useLocation } from 'react-router-dom'
 import DetailsList from '../components/DetailsList';
+import { Link } from 'react-router-dom';
 const HeroDetails = () => {
   let {id}= useParams();
   const location = useLocation();
@@ -9,6 +10,7 @@ const HeroDetails = () => {
   console.log(character.events.items)
   return (
     <div>
+      <Link to="/">Return to DashBoard</Link>
       <h1>{character.name}</h1>
       <p>{character.description}</p>
       <img src={image} alt="Character Image" />

@@ -10,7 +10,6 @@ const publicKey = "6e0097515dc105a219d25ef94858bb63";
 const privateKey = "123102cd959c55e2fa8771bea661b34427de08b0";
 const hash = CryptoJS.MD5(ts + privateKey + publicKey).toString();
 const url = "http://gateway.marvel.com/v1/public/"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Label, } from 'recharts';
 
 
 function DashBoard() {
@@ -22,20 +21,9 @@ function DashBoard() {
   const [totalEvents,setTotalEvents] = useState(null);
   const [totalSeries ,setTotalSeries] = useState(null);
 
-  const handleDashBoardClick = async () => {
-    const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`);
-      if (!response.ok) {
-        console.error("response was not received");
-      }
-      const json = await response.json();
-      setCharacters(json.data.results);
-      
-      
-  }
-
   useEffect(()=> {
     const apiCall = async () => {
-      const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=100`);
+      const response = await fetch(`${url}characters?ts=${ts}&apikey=${publicKey}&hash=${hash}&limit=50`);
         if (!response.ok) {
           console.error("response was not received");
         }
@@ -110,12 +98,12 @@ useEffect(()=>{
     }
     const seriesChartData = characters.map(character => ({
       name: character.name,
-      seriesCount: character.series.available, // Number of series available for each character
+      series: character.series.available, // Number of series available for each character
     }));
 
     const eventChartData = characters.map(character => ({
       name: character.name,
-      eventsCount: character.events.available, // Number of series available for each character
+      events: character.events.available, // Number of series available for each character
     }));
     
   
@@ -125,8 +113,6 @@ useEffect(()=>{
   return (
     <div className='page-container'>
       <h1>Lets See What Marvel Has To Offer</h1>
-      <button onClick={handleDashBoardClick}>Return to DashBoard</button>
-
       <div className='summary-container'>
         <SummaryStats
         value={totalCharacters}
@@ -192,12 +178,12 @@ useEffect(()=>{
           <DataChart
             chartData={seriesChartData}
             chartTitle={'Series per Character'}
-            dataValue={'seriesCount'}
+            dataValue={'series'}
           ></DataChart>
           <DataChart
             chartData={eventChartData}
             chartTitle={'Events Per Character'}
-            dataValue={'eventsCount'}
+            dataValue={'events'}
           />
 
 
